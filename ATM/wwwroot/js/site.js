@@ -10,30 +10,43 @@ function goBack() {
     window.history.back();
 }
 
+function clearInput(input) {
+    input.value = input.value.substring(0, 0);
+}
+
+// Data Input Formatting
+//------------------------------------------------
+
 $("input[data-type='CreditCardNumber']").on({
-    keyup: function () {
-        formatCreditCard($(this));
+    keydown: function () {
+        //formatCreditCard($(this));
+        return false;
     },
     blur: function () {
-        formatCreditCard($(this), "blur");
+        //formatCreditCard($(this), "blur");
+        return false;
     }
 });
 
 $("input[data-type='Pin']").on({
-    keyup: function () {
-        formatCreditCard($(this));
+    keypress: function () {
+        //formatCreditCard($(this));
+        return false;
     },
     blur: function () {
-        formatCreditCard($(this), "blur");
+        //formatCreditCard($(this), "blur");
+        return false;
     }
 });
 
 $("input[data-type='currency']").on({
-    keyup: function () {
-        formatCurrency($(this));
+    keypress: function () {
+        //formatCurrency($(this));
+        return false;
     },
     blur: function () {
-        formatCurrency($(this), "blur");
+        //formatCurrency($(this), "blur");
+        return false;
     }
 });
 
@@ -41,7 +54,6 @@ function formatCreditCardNumber(n) {
     // format number 1000000 to 123-4567
     return n.replace(/\D/g, "").replace(/\B(?=(\d{4})+(?!\d))/g, "-")
 }
-
 
 function formatCreditCard(input, blur) {
     // appends $ to value, validates decimal side
@@ -71,11 +83,44 @@ function formatCreditCard(input, blur) {
     input[0].setSelectionRange(caret_pos, caret_pos);
 }
 
+function formatPinNumber(n) {
+    // format number 1000000 to 123-4567
+    return n.replace(/\D/g, "").replace(/\B(?=(\d{4})+(?!\d))/g, "-")
+}
+
+function formatPin(input, blur) {
+    // appends $ to value, validates decimal side
+    // and puts cursor back in right position.
+
+    // get input value
+    var input_val = input.val();
+
+    // don't validate empty input
+    if (input_val === "") { return; }
+
+    // original length
+    var original_len = input_val.length;
+
+    // initial caret position 
+    var caret_pos = input.prop("selectionStart");
+
+    input_val = formatPinNumber(input_val);
+    if (input_val.length > 4) input_val = input_val.substring(0, 4);
+    input_val = input_val;
+
+    // send updated string to input
+    input.val(input_val);
+
+    // put caret back in the right position
+    var updated_len = input_val.length;
+    caret_pos = updated_len - original_len + caret_pos;
+    input[0].setSelectionRange(caret_pos, caret_pos);
+}
+
 function formatNumber(n) {
     // format number 1000000 to 1,234,567
     return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, "")
 }
-
 
 function formatCurrency(input, blur) {
     // appends $ to value, validates decimal side

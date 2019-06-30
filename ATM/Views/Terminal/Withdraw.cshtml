@@ -10,25 +10,22 @@
 <hr />
 <div class="row">
     <div class="col-md-4 margin-top-20"></div>
-    <div class="col-md-4">
+    <div class="col-md-4 margin-top-20">
         <form asp-action="Withdraw">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="WithdrawalAmount" class="control-label"></label>
-                <input asp-for="WithdrawalAmount" class="form-control" data-type="currency" placeholder="1,000.00" />
+                <input asp-for="WithdrawalAmount" class="form-control" data-type="currency" placeholder="1,000.00" id="use-numpad"/>
                 <span asp-validation-for="WithdrawalAmount" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
-                <label class="control-label">
-                    Placeholder for numpad
-                </label>
+            <div class="form-group">
+                <partial name="_NumPadCurrency" />
             </div>
             <div class="form-group">
                 <input type="submit" value="OK" class="btn btn-primary btn-block" />
             </div>
-            <div class="form-group btn btn-primary btn-block">Clear</div>
-            <a href="Index"><div class="form-group btn btn-primary btn-block">Exit</div></a>
         </form>
+        <a href="Index"><div class="btn btn-primary btn-block">Exit</div></a>
     </div>
 </div>
 
