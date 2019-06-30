@@ -1,4 +1,5 @@
-﻿using ATM.Models;
+﻿using ATM.Filters;
+using ATM.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -43,6 +44,7 @@ namespace ATM.Controllers
             return RedirectToAction(nameof(Pin));
         }
 
+        [TerminalAuthorizationFilter]
         public IActionResult Pin()
         {
             return View();
@@ -50,6 +52,7 @@ namespace ATM.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [TerminalAuthorizationFilter]
         public async Task<IActionResult> Pin(int pin)
         {
             int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
@@ -64,11 +67,13 @@ namespace ATM.Controllers
             }
         }
 
+        [TerminalAuthorizationFilter]
         public IActionResult Menu()
         {
             return View();
         }
 
+        [TerminalAuthorizationFilter]
         public async Task<IActionResult> Balance()
         {
             int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
@@ -76,6 +81,7 @@ namespace ATM.Controllers
             return View(result);
         }
 
+        [TerminalAuthorizationFilter]
         public IActionResult Withdraw()
         {
             return View();
@@ -83,6 +89,7 @@ namespace ATM.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [TerminalAuthorizationFilter]
         public async Task<IActionResult> Withdraw(decimal withdrawalAmount)
         {
             int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
@@ -90,6 +97,7 @@ namespace ATM.Controllers
             return RedirectToAction(nameof(WithdrawalResult), result);
         }
 
+        [TerminalAuthorizationFilter]
         public IActionResult WithdrawalResult(WithdrawalResultViewModel viewModel)
         {
             return View(viewModel);
@@ -97,6 +105,7 @@ namespace ATM.Controllers
 
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [TerminalAuthorizationFilter]
         public IActionResult Error()
         {
             ErrorViewModel errorView = new ErrorViewModel
