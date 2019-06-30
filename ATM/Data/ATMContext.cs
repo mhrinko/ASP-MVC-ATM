@@ -18,8 +18,12 @@ namespace ATM.Models
 
         public async virtual Task<int> GetCardIdByNumberAsync(string number)
         {
-            CreditCard card = await CreditCards.Where(x => x.Number == number).FirstAsync();
-            if (card == null)
+            CreditCard card;
+            try
+            {
+                card = await CreditCards.Where(x => x.Number == number).FirstAsync();
+            }
+            catch (ArgumentNullException)
             {
                 throw new ArgumentException("Card with this number doesn't exist");
             }
@@ -38,8 +42,12 @@ namespace ATM.Models
 
         public async virtual Task<CreditCard> GetCreditCardByIdAsync(int id)
         {
-            CreditCard card = await CreditCards.Where(x => x.Id == id).FirstAsync();
-            if (card == null)
+            CreditCard card;
+            try
+            {
+                card = await CreditCards.Where(x => x.Id == id).FirstAsync();
+            }
+            catch (ArgumentNullException)
             {
                 throw new ArgumentException("Card with this ID doesn't exist");
             }
@@ -52,8 +60,12 @@ namespace ATM.Models
 
         public async virtual Task<CreditCardBalanceViewModel> GetCreditCardDetailsByIdAsync(int id)
         {
-            CreditCard card = await CreditCards.Where(x => x.Id == id).FirstAsync();
-            if (card == null)
+            CreditCard card;
+            try
+            {
+                card = await CreditCards.Where(x => x.Id == id).FirstAsync();
+            }
+            catch (ArgumentNullException)
             {
                 throw new ArgumentException("Card with this ID doesn't exist");
             }
@@ -68,8 +80,12 @@ namespace ATM.Models
 
         public async virtual Task<WithdrawalResultViewModel> WithdrawByIdAsync(int id, decimal amount)
         {
-            CreditCard card = await CreditCards.Where(x => x.Id == id).FirstAsync();
-            if (card == null)
+            CreditCard card;
+            try
+            {
+                card = await CreditCards.Where(x => x.Id == id).FirstAsync();
+            }
+            catch (ArgumentNullException)
             {
                 throw new ArgumentException("Card with this ID doesn't exist");
             }
@@ -80,6 +96,10 @@ namespace ATM.Models
             if (card.Balance < amount)
             {
                 throw new InvalidOperationException("Insufficient funds");
+            }
+            if (amount <= 0)
+            {
+                throw new InvalidOperationException($"Invalid withdrawal amount: {amount}, must be above zero");
             }
 
             card.Balance -= amount;

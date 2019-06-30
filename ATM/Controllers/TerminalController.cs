@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using ATM.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+﻿using ATM.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace ATM.Controllers
 {
@@ -38,18 +38,7 @@ namespace ATM.Controllers
         public async Task<IActionResult> Card(string number)
         {
             int id;
-            try
-            {
-                id = await _context.GetCardIdByNumberAsync(number);
-            }
-            catch (ArgumentException ex)
-            {
-                return RedirectToAction(nameof(Error), ex);
-            }
-            catch (InvalidOperationException ex)
-            {
-                return RedirectToAction(nameof(Error), ex);
-            }
+            id = await _context.GetCardIdByNumberAsync(number);
             HttpContext.Session.SetInt32(SESSSION_KEY_CARD_ID, id);
             return RedirectToAction(nameof(Pin));
         }
@@ -69,7 +58,10 @@ namespace ATM.Controllers
             {
                 return RedirectToAction(nameof(Menu));
             }
-            return RedirectToAction(nameof(Error), "There is no valid card with this number and pin combination");
+            else
+            {
+                throw new InvalidCastException("No card identifier provided");
+            }
         }
 
         public IActionResult Menu()
@@ -91,10 +83,10 @@ namespace ATM.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Withdraw(decimal amount)
+        public async Task<IActionResult> Withdraw(decimal withdrawalAmount)
         {
             int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
-            var result = await _context.WithdrawByIdAsync(cardId, amount);
+            var result = await _context.WithdrawByIdAsync(cardId, withdrawalAmount);
             return RedirectToAction(nameof(WithdrawalResult), result);
         }
 
@@ -103,20 +95,28 @@ namespace ATM.Controllers
             return View(viewModel);
         }
 
-        public IActionResult Error(Exception ex)
+        [AllowAnonymous]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
         {
-            //_logger.LogInformation($"Handled an error at {ex.Source} with message {ex.Message}");
-            //_logger.LogInformation($"Handled an error at {ex.Source} with message {ex.Message}");
-            ViewData["ErrorMessage"] = ex.Message;
-            return View();
-        }
+            ErrorViewModel errorView = new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                Referrer = HttpContext.Request.Headers["referer"]
+            };
+            var exceptionHandlerPathFeature =
+                HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            errorView.ErrorMessage = exceptionHandlerPathFeature?.Error.Message;
+            if (exceptionHandlerPathFeature?.Path == "/index")
+            {
+                errorView.ErrorMessage += " from home page";
+            }
+            if (exceptionHandlerPathFeature?.Path == "/index")
+            {
+                errorView.ErrorMessage += " from home page";
+            }
 
-        public IActionResult Error(string message)
-        {
-            //_logger.LogInformation($"Handled an error at {ex.Source} with message {ex.Message}");
-            //_logger.LogInformation($"Handled an error at {ex.Source} with message {ex.Message}");
-            ViewData["ErrorMessage"] = message;
-            return View();
+            return View(errorView);
         }
     }
 }
