@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -13,19 +14,19 @@ namespace ATM.Controllers
     public class TerminalController : Controller
     {
         private ATMContext _context;
-        //private ILogger _logger;
+        private ILogger _logger;
 
         public static readonly string SESSSION_KEY_CARD_ID = "cardId";
 
-        public TerminalController(ATMContext context/*, ILogger logger*/)
+        public TerminalController(ATMContext context, ILogger<TerminalController> logger)
         {
             _context = context;
-            //_logger = logger;
+            _logger = logger;
         }
 
         public IActionResult Index()
         {
-            return View(nameof(Card));
+            return RedirectToAction(nameof(Card));
         }
 
         public IActionResult Card()
@@ -105,7 +106,6 @@ namespace ATM.Controllers
 
         [AllowAnonymous]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        [TerminalAuthorizationFilter]
         public IActionResult Error()
         {
             ErrorViewModel errorView = new ErrorViewModel
@@ -116,13 +116,19 @@ namespace ATM.Controllers
             var exceptionHandlerPathFeature =
                 HttpContext.Features.Get<IExceptionHandlerPathFeature>();
             errorView.ErrorMessage = exceptionHandlerPathFeature?.Error.Message;
-            if (exceptionHandlerPathFeature?.Path == "/index")
+
+            string logMessage = "";
+            if (errorView.ShowRequestId)
             {
-                errorView.ErrorMessage += " from home page";
+                logMessage += $"Request ID: {errorView.RequestId}";
             }
-            if (exceptionHandlerPathFeature?.Path == "/index")
+            if (errorView.ShowReferrer)
             {
-                errorView.ErrorMessage += " from home page";
+                logMessage += $"Referrer: {errorView.Referrer}";
+            }
+            if (errorView.ShowErrorMessage)
+            {
+                logMessage += $"Request ID: {errorView.ShowErrorMessage}";
             }
 
             return View(errorView);

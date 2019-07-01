@@ -23,7 +23,7 @@ namespace ATM.Models
             {
                 card = await CreditCards.Where(x => x.Number == number).FirstAsync();
             }
-            catch (ArgumentNullException)
+            catch (Exception)
             {
                 throw new ArgumentException("Card with this number doesn't exist");
             }
@@ -47,7 +47,7 @@ namespace ATM.Models
             {
                 card = await CreditCards.Where(x => x.Id == id).FirstAsync();
             }
-            catch (ArgumentNullException)
+            catch (Exception)
             {
                 throw new ArgumentException("Card with this ID doesn't exist");
             }
@@ -65,7 +65,7 @@ namespace ATM.Models
             {
                 card = await CreditCards.Where(x => x.Id == id).FirstAsync();
             }
-            catch (ArgumentNullException)
+            catch (Exception)
             {
                 throw new ArgumentException("Card with this ID doesn't exist");
             }
@@ -85,7 +85,7 @@ namespace ATM.Models
             {
                 card = await CreditCards.Where(x => x.Id == id).FirstAsync();
             }
-            catch (ArgumentNullException)
+            catch (Exception)
             {
                 throw new ArgumentException("Card with this ID doesn't exist");
             }

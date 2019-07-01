@@ -11,11 +11,11 @@
 <div class="row">
     <div class="col-md-4 margin-top-20"></div>
     <div class="col-md-4 margin-top-20">
-        <form asp-action="Withdraw">
+        <form asp-action="Withdraw" autocomplete="off">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="WithdrawalAmount" class="control-label"></label>
-                <input asp-for="WithdrawalAmount" class="form-control" data-type="currency" placeholder="1,000.00" id="use-numpad"/>
+                <input asp-for="WithdrawalAmount" class="form-control" data-type="currency" placeholder="1,000.00" id="use-numpad" />
                 <span asp-validation-for="WithdrawalAmount" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -25,7 +25,8 @@
                 <input type="submit" value="OK" class="btn btn-primary btn-block" />
             </div>
         </form>
-        <a href="Index"><div class="btn btn-primary btn-block">Exit</div></a>
+        <a href="Menu"><div class="btn btn-primary btn-block margin-top-20">Back</div></a>
+        <a href="Index"><div class="btn btn-primary btn-block margin-top-20">Exit</div></a>
     </div>
 </div>
 

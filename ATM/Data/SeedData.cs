@@ -14,10 +14,9 @@ namespace ATM.Data
                 serviceProvider.GetRequiredService<
                     DbContextOptions<ATMContext>>()))
             {
-                // Look for any movies.
                 if (context.CreditCards.Any())
                 {
-                    return;   // DB has been seeded
+                    return;
                 }
 
                 context.CreditCards.AddRange(ATMContext.GetSeedingCards());

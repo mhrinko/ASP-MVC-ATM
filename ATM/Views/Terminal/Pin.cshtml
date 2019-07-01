@@ -5,13 +5,14 @@
 }
 
 <h1>Pin</h1>
+<hr />
 
 <h4>Please input your card PIN-code</h4>
 <hr />
 <div class="row">
     <div class="col-md-4 margin-top-20"></div>
     <div class="col-md-4 margin-top-20">
-        <form asp-action="Pin">
+        <form asp-action="Pin" autocomplete="off">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Pin" class="control-label"></label>
