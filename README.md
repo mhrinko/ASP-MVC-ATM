@@ -36,4 +36,6 @@ Other ways to launch the app may require additional environment setup for all fu
 * ~~Records about user actions~~
 * ~~Bootstrap-powered UI~~
 * ~~Data input using on-screen numpad only~~
+* 3 layer architecture
+* Repository pattern in data access layer
 * Unit-tests
