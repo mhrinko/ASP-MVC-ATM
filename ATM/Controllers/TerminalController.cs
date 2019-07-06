@@ -1,5 +1,6 @@
 ﻿using ATM.Filters;
 using ATM.Models;
+using ATM.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -13,14 +14,14 @@ namespace ATM.Controllers
 {
     public class TerminalController : Controller
     {
-        private ATMContext _context;
+        private TerminalService _terminalService;
         private ILogger _logger;
 
         public static readonly string SESSSION_KEY_CARD_ID = "cardId";
 
-        public TerminalController(ATMContext context, ILogger<TerminalController> logger)
+        public TerminalController(TerminalService terminalService, ILogger<TerminalController> logger)
         {
-            _context = context;
+            _terminalService = terminalService;
             _logger = logger;
         }
 
@@ -39,8 +40,7 @@ namespace ATM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Card(string number)
         {
-            int id;
-            id = await _context.GetCardIdByNumberAsync(number);
+            int id = await _terminalService.GetCardIdByNumberAsync(number);
             HttpContext.Session.SetInt32(SESSSION_KEY_CARD_ID, id);
             return RedirectToAction(nameof(Pin));
         }
@@ -57,14 +57,14 @@ namespace ATM.Controllers
         public async Task<IActionResult> Pin(int pin)
         {
             int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
-            bool isValid = await _context.IsValidCardCombinationAsync(cardId, pin);
+            bool isValid = await _terminalService.IsValidCardCombinationAsync(cardId, pin);
             if (isValid)
             {
                 return RedirectToAction(nameof(Menu));
             }
             else
             {
-                throw new InvalidCastException("No card identifier provided");
+                throw new InvalidOperationException("No valid card found with this number-pin combination");
             }
         }
 
@@ -78,7 +78,7 @@ namespace ATM.Controllers
         public async Task<IActionResult> Balance()
         {
             int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
-            var result = await _context.GetCreditCardDetailsByIdAsync(cardId);
+            var result = await _terminalService.GetCreditCardDetailsByIdAsync(cardId);
             return View(result);
         }
 
@@ -94,7 +94,7 @@ namespace ATM.Controllers
         public async Task<IActionResult> Withdraw(decimal withdrawalAmount)
         {
             int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
-            var result = await _context.WithdrawByIdAsync(cardId, withdrawalAmount);
+            var result = await _terminalService.WithdrawByIdAsync(cardId, withdrawalAmount);
             return RedirectToAction(nameof(WithdrawalResult), result);
         }
 

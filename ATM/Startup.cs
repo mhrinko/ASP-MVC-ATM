@@ -7,6 +7,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using ATM.Models;
 using System;
+using ATM.Data;
+using ATM.Services;
 
 namespace ATM
 {
@@ -42,6 +44,9 @@ namespace ATM
 
             services.AddDbContext<ATMContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("ATMContext")));
+            services.AddScoped<IRepository<CreditCard>, DbCreditCardRepository>();
+            services.AddScoped<IRepository<UserActionResult>, DBUserActionResultRepository>();
+            services.AddScoped<TerminalService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
