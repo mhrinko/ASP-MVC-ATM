@@ -11,7 +11,7 @@ This app is compatible with ASP.NET version 2.2 and is able to work on Windows d
 
 ## Run
 
-To run the app on Windows, open the console in containing folder, then go to 'ATM' folder and from there launch the app using the following command:
+To run the app on Windows, open the console in containing folder, then go to 'ATM.WebUI' folder and from there launch the app using the following command:
 
 ```
 dotnet run
@@ -36,6 +36,6 @@ Other ways to launch the app may require additional environment setup for all fu
 * ~~Records about user actions~~
 * ~~Bootstrap-powered UI~~
 * ~~Data input using on-screen numpad only~~
-* 3 layer architecture
-* Repository pattern in data access layer
+* ~~3 layer architecture~~
+* ~~Repository pattern in data access layer~~
 * Unit-tests

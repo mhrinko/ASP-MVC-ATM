@@ -1,0 +1,34 @@
+﻿@model ATM.DataAccess.Models.CreditCard
+
+@{
+    ViewData["Title"] = "Card";
+}
+
+<h1>Welcome</h1>
+
+<h4>Please input your card number</h4>
+<hr />
+
+<div class="row">
+    <div class="col-md-4 margin-top-20"></div>
+    <div class="col-md-4 margin-top-20">
+        <form asp-action="Card" autocomplete="off">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group align-content-center">
+                <label asp-for="Number" class="control-label"></label>
+                <input asp-for="Number" class="form-control text-center" pattern="^\d{4}(-\d{4}){3}$" placeholder="XXXX-XXXX-XXXX-XXXX" data-type="CreditCardNumber" id="use-numpad"/>
+                <span asp-validation-for="Number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <partial name="_NumPadCreditCard" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="OK" class="btn btn-primary btn-block" />
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
