@@ -1,24 +1,24 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using ATM.Models;
+using ATM.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ATM.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace ATM.Controllers
 {
     public class ActionResultsController : Controller
     {
-        private readonly ATMContext _context;
+        private readonly ActionResultService _actionResultService;
 
-        public ActionResultsController(ATMContext context)
+        public ActionResultsController(ActionResultService actionResultService)
         {
-            _context = context;
+            _actionResultService = actionResultService;
         }
 
         // GET: ActionResults
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ActionResults.ToListAsync());
+            return View(await _actionResultService.GetAllActionResults());
         }
 
         // GET: ActionResults/Details/5
@@ -29,8 +29,7 @@ namespace ATM.Controllers
                 return NotFound();
             }
 
-            var actionResult = await _context.ActionResults
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var actionResult = await _actionResultService.GetActionResultById(id.Value);
             if (actionResult == null)
             {
                 return NotFound();
@@ -54,8 +53,7 @@ namespace ATM.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(actionResult);
-                await _context.SaveChangesAsync();
+                await _actionResultService.EditActionResult(actionResult);
                 return RedirectToAction(nameof(Index));
             }
             return View(actionResult);
@@ -69,7 +67,7 @@ namespace ATM.Controllers
                 return NotFound();
             }
 
-            var actionResult = await _context.ActionResults.FindAsync(id);
+            var actionResult = await _actionResultService.GetActionResultById(id.Value);
             if (actionResult == null)
             {
                 return NotFound();
@@ -93,10 +91,9 @@ namespace ATM.Controllers
             {
                 try
                 {
-                    _context.Update(actionResult);
-                    await _context.SaveChangesAsync();
+                    await _actionResultService.EditActionResult(actionResult);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (InvalidOperationException)
                 {
                     if (!ActionResultExists(actionResult.Id))
                     {
@@ -120,8 +117,7 @@ namespace ATM.Controllers
                 return NotFound();
             }
 
-            var actionResult = await _context.ActionResults
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var actionResult = await _actionResultService.GetActionResultById(id.Value);
             if (actionResult == null)
             {
                 return NotFound();
@@ -135,15 +131,16 @@ namespace ATM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var actionResult = await _context.ActionResults.FindAsync(id);
-            _context.ActionResults.Remove(actionResult);
-            await _context.SaveChangesAsync();
+            if (ActionResultExists(id))
+            {
+                await _actionResultService.DeleteActionResultById(id); 
+            }
             return RedirectToAction(nameof(Index));
         }
 
         private bool ActionResultExists(int id)
         {
-            return _context.ActionResults.Any(e => e.Id == id);
+            return _actionResultService.ActionResultExists(id);
         }
     }
 }

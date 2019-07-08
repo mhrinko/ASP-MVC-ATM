@@ -1,24 +1,24 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
+﻿using ATM.Models;
+using ATM.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ATM.Models;
+using System;
+using System.Threading.Tasks;
 
 namespace ATM.Controllers
 {
     public class CreditCardsController : Controller
     {
-        private readonly ATMContext _context;
+        private readonly CreditCardService _creditCardService;
 
-        public CreditCardsController(ATMContext context)
+        public CreditCardsController(CreditCardService creditCardService)
         {
-            _context = context;
+            _creditCardService = creditCardService;
         }
 
         // GET: CreditCards
         public async Task<IActionResult> Index()
         {
-            return View(await _context.CreditCards.ToListAsync());
+            return View(await _creditCardService.GetAllCreditCards());
         }
 
         // GET: CreditCards/Details/5
@@ -29,8 +29,7 @@ namespace ATM.Controllers
                 return NotFound();
             }
 
-            var creditCard = await _context.CreditCards
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var creditCard = await _creditCardService.GetCreditCardById(id.Value);
             if (creditCard == null)
             {
                 return NotFound();
@@ -54,8 +53,7 @@ namespace ATM.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(creditCard);
-                await _context.SaveChangesAsync();
+                await _creditCardService.AddCreditCard(creditCard);
                 return RedirectToAction(nameof(Index));
             }
             return View(creditCard);
@@ -69,7 +67,7 @@ namespace ATM.Controllers
                 return NotFound();
             }
 
-            var creditCard = await _context.CreditCards.FindAsync(id);
+            var creditCard = await _creditCardService.GetCreditCardById(id.Value);
             if (creditCard == null)
             {
                 return NotFound();
@@ -93,10 +91,9 @@ namespace ATM.Controllers
             {
                 try
                 {
-                    _context.Update(creditCard);
-                    await _context.SaveChangesAsync();
+                    await _creditCardService.EditCreditCard(creditCard);
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (InvalidOperationException)
                 {
                     if (!CreditCardExists(creditCard.Id))
                     {
@@ -120,8 +117,7 @@ namespace ATM.Controllers
                 return NotFound();
             }
 
-            var creditCard = await _context.CreditCards
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var creditCard = await _creditCardService.GetCreditCardById(id.Value);
             if (creditCard == null)
             {
                 return NotFound();
@@ -135,15 +131,16 @@ namespace ATM.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var creditCard = await _context.CreditCards.FindAsync(id);
-            _context.CreditCards.Remove(creditCard);
-            await _context.SaveChangesAsync();
+            if (CreditCardExists(id))
+            {
+                await _creditCardService.DeleteCreditCardById(id);
+            }
             return RedirectToAction(nameof(Index));
         }
 
         private bool CreditCardExists(int id)
         {
-            return _context.CreditCards.Any(e => e.Id == id);
+            return _creditCardService.CreditCardExists(id);
         }
     }
 }

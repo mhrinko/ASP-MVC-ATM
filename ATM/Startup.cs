@@ -47,6 +47,8 @@ namespace ATM
             services.AddScoped<IRepository<CreditCard>, DbCreditCardRepository>();
             services.AddScoped<IRepository<UserActionResult>, DBUserActionResultRepository>();
             services.AddScoped<TerminalService>();
+            services.AddScoped<CreditCardService>();
+            services.AddScoped<ActionResultService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
