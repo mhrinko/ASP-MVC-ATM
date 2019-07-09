@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using ATM.DataAccess.Models;
 
-namespace ATM.DataAccess.Tests.Utilities
+namespace ATM.TestUtils
 {
-    public class TestOptions
+    public static class TestOptions
     {
-        public static DbContextOptions<ATMContext> TestDbContextOptions()
+        public static DbContextOptions<TDbContext> TestDbContextOptions<TDbContext>() where TDbContext : DbContext
         {
             // Create a new service provider to create a new in-memory database.
             var serviceProvider = new ServiceCollection()
@@ -19,7 +15,7 @@ namespace ATM.DataAccess.Tests.Utilities
             // Create a new options instance using an in-memory database and 
             // IServiceProvider that the context should resolve all of its 
             // services from.
-            var builder = new DbContextOptionsBuilder<ATMContext>()
+            var builder = new DbContextOptionsBuilder<TDbContext>()
                 .UseInMemoryDatabase("InMemoryDb")
                 .UseInternalServiceProvider(serviceProvider);
 

@@ -1,6 +1,6 @@
 ﻿using ATM.DataAccess.Data;
 using ATM.DataAccess.Models;
-using ATM.DataAccess.Tests.Utilities;
+using ATM.TestUtils;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -12,17 +12,15 @@ namespace ATM.DataAccess.Tests.UnitTests
 {
     public class DbCreditCardRepositoryTests
     {
-        private static readonly CreditCard CARD_NOT_IN_SEEDING_CARDS = new CreditCard { Id = 999, Number = "1234-5678-2345-6789", Pin = 1234, Balance = 1278.00M, IsValid = true };
-
         #region GetAllAsyncTests
 
         [Fact]
         public async Task GetAllAsync_ShouldReturnSeedingCards()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
-                var expectedCards = ATMContext.GetSeedingCards();
+                var expectedCards = SampleData.CREDITCARDS;
                 await db.AddRangeAsync(expectedCards);
                 await db.SaveChangesAsync();
                 IRepository<CreditCard> repository = new DbCreditCardRepository(db);
@@ -43,11 +41,11 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task GetBuIdAsync_ShouldReturnACard()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
-                var expectedCard = ATMContext.GetSeedingCards().First();
-                await db.AddRangeAsync(ATMContext.GetSeedingCards());
+                var expectedCard = SampleData.CREDITCARDS.First();
+                await db.AddRangeAsync(SampleData.CREDITCARDS);
                 await db.SaveChangesAsync();
                 var expectedDbCard = await db.CreditCards.Where(x => x.Number == expectedCard.Number).FirstAsync();
                 int cardId = expectedDbCard.Id;
@@ -64,10 +62,10 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task GetBuIdAsync_ShouldReturnNoCard()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
-                await db.AddRangeAsync(ATMContext.GetSeedingCards());
+                await db.AddRangeAsync(SampleData.CREDITCARDS);
                 await db.SaveChangesAsync();
                 CreditCard expectedDbCard = null;
                 int cardId = db.CreditCards.OrderBy(x => x.Id).Last().Id + 1;
@@ -86,11 +84,11 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task AddAsync_ShouldAddANewCard()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
-                var expectedDbCard = CARD_NOT_IN_SEEDING_CARDS;
-                var initCards = ATMContext.GetSeedingCards();
+                var expectedDbCard = SampleData.CARD_NOT_ON_THE_LIST;
+                var initCards = SampleData.CREDITCARDS;
                 if (initCards.Exists(cc => cc.Id == expectedDbCard.Id || cc.Number == expectedDbCard.Number))
                 {
                     throw new InvalidOperationException($"Seeding cards already contain the card that is not supposed to be there: {expectedDbCard}");
@@ -118,11 +116,11 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task AddAsync_ShouldNotAddACard()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
-                var expectedCard = ATMContext.GetSeedingCards().First();
-                await db.AddRangeAsync(ATMContext.GetSeedingCards());
+                var expectedCard = SampleData.CREDITCARDS.First();
+                await db.AddRangeAsync(SampleData.CREDITCARDS);
                 await db.SaveChangesAsync();
                 var expectedDbCard = await db.CreditCards.Where(x => x.Number == expectedCard.Number).FirstAsync();
                 IRepository<CreditCard> repository = new DbCreditCardRepository(db);
@@ -141,10 +139,10 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task DeleteAsync_ShouldDeleteACard()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
-                var initCards = ATMContext.GetSeedingCards();
+                var initCards = SampleData.CREDITCARDS;
                 await db.AddRangeAsync(initCards);
                 await db.SaveChangesAsync();
                 IRepository<CreditCard> repository = new DbCreditCardRepository(db);
@@ -169,11 +167,11 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task DeleteAsync_ShouldNotDelete()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
-                var cardToDelete = CARD_NOT_IN_SEEDING_CARDS;
-                var initCards = ATMContext.GetSeedingCards();
+                var cardToDelete = SampleData.CARD_NOT_ON_THE_LIST;
+                var initCards = SampleData.CREDITCARDS;
                 if (initCards.Exists(cc => cc.Id == cardToDelete.Id || cc.Number == cardToDelete.Number))
                 {
                     throw new InvalidOperationException($"Seeding cards already contain the card that is not supposed to be there: {cardToDelete}");
@@ -195,10 +193,10 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task EditAsync_ShouldEditACard()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
-                var initCards = ATMContext.GetSeedingCards();
+                var initCards = SampleData.CREDITCARDS;
                 await db.AddRangeAsync(initCards);
                 await db.SaveChangesAsync();
                 IRepository<CreditCard> repository = new DbCreditCardRepository(db);
@@ -226,11 +224,11 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task EditAsync_ShouldNotEdit()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
-                var cardToEdit = CARD_NOT_IN_SEEDING_CARDS;
-                var initCards = ATMContext.GetSeedingCards();
+                var cardToEdit = SampleData.CARD_NOT_ON_THE_LIST;
+                var initCards = SampleData.CREDITCARDS;
                 if (initCards.Exists(cc => cc.Id == cardToEdit.Id || cc.Number == cardToEdit.Number))
                 {
                     throw new InvalidOperationException($"Seeding cards already contain the card that is not supposed to be there: {cardToEdit}");

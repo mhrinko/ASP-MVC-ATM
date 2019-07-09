@@ -1,6 +1,6 @@
 ﻿using ATM.DataAccess.Data;
 using ATM.DataAccess.Models;
-using ATM.DataAccess.Tests.Utilities;
+using ATM.TestUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,11 +48,10 @@ namespace ATM.DataAccess.Tests.UnitTests
             };
 
         #region GetAllAsyncTests
-
         [Fact]
         public async Task GetAllAsync_ShouldReturnSeedingActions()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
                 var expectedResults = ACTION_RESULTS;
@@ -76,7 +75,7 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task GetBuIdAsync_ShouldReturnAAction()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
                 var expectedAction = ACTION_RESULTS.First();
@@ -97,7 +96,7 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task GetBuIdAsync_ShouldReturnNoAction()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
                 await db.AddRangeAsync(ACTION_RESULTS);
@@ -119,7 +118,7 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task AddAsync_ShouldAddANewAction()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
                 var expectedDbAction = ACTION_NOT_IN_SEEDING_ACTIONS;
@@ -151,7 +150,7 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task AddAsync_ShouldNotAddAAction()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
                 var expectedAction = ACTION_RESULTS.First();
@@ -173,7 +172,7 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task DeleteAsync_ShouldDeleteAAction()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
                 var initActions = ACTION_RESULTS;
@@ -201,7 +200,7 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task DeleteAsync_ShouldNotDelete()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
                 var actionToDelete = ACTION_NOT_IN_SEEDING_ACTIONS;
@@ -227,7 +226,7 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task EditAsync_ShouldEditACard()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
                 var initCards = ACTION_RESULTS;
@@ -258,7 +257,7 @@ namespace ATM.DataAccess.Tests.UnitTests
         [Fact]
         public async Task EditAsync_ShouldNotEdit()
         {
-            using (var db = new ATMContext(TestOptions.TestDbContextOptions()))
+            using (var db = new ATMContext(TestOptions.TestDbContextOptions<ATMContext>()))
             {
                 // Arrange
                 var cardToEdit = ACTION_NOT_IN_SEEDING_ACTIONS;
