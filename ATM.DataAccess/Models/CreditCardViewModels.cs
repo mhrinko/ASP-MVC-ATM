@@ -16,6 +16,20 @@ namespace ATM.DataAccess.Models
 
         [DataType(DataType.Currency)]
         public decimal Balance { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            var model = obj as CreditCardBalanceViewModel;
+            return model != null &&
+                   Number == model.Number &&
+                   CurrentTime == model.CurrentTime &&
+                   Balance == model.Balance;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Number, CurrentTime, Balance);
+        }
     }
 
     public class WithdrawalResultViewModel
@@ -35,5 +49,20 @@ namespace ATM.DataAccess.Models
         [DataType(DataType.Currency)]
         [Display(Name = "Remaining balance")]
         public decimal RemainingBalance { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            var model = obj as WithdrawalResultViewModel;
+            return model != null &&
+                   Number == model.Number &&
+                   CurrentTime == model.CurrentTime &&
+                   WithdrawalAmount == model.WithdrawalAmount &&
+                   RemainingBalance == model.RemainingBalance;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(Number, CurrentTime, WithdrawalAmount, RemainingBalance);
+        }
     }
 }

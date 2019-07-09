@@ -22,5 +22,21 @@ namespace ATM.DataAccess.Models
         [DataType(DataType.Currency)]
         [Display(Name = "Withdrawal amount")]
         public decimal WithdrawalAmount { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            var result = obj as UserActionResult;
+            return result != null &&
+                   Id == result.Id &&
+                   CreditCardId == result.CreditCardId &&
+                   OperationCode == result.OperationCode &&
+                   TimeStamp == result.TimeStamp &&
+                   WithdrawalAmount == result.WithdrawalAmount;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id;
+        }
     }
 }

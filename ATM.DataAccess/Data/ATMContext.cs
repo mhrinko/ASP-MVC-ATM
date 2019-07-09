@@ -16,6 +16,7 @@ namespace ATM.DataAccess.Models
         public virtual DbSet<CreditCard> CreditCards { get; set; }
         public virtual DbSet<UserActionResult> ActionResults { get; set; }
 
+        #region OldFunctionality
         public async virtual Task<int> GetCardIdByNumberAsync(string number)
         {
             CreditCard card;
@@ -109,6 +110,7 @@ namespace ATM.DataAccess.Models
 
             return new WithdrawalResultViewModel { Number = card.Number, RemainingBalance = card.Balance, WithdrawalAmount = amount };
         }
+        #endregion
 
         public static List<CreditCard> GetSeedingCards()
         {
@@ -118,6 +120,14 @@ namespace ATM.DataAccess.Models
                 new CreditCard { Number = "2222-2222-2222-2222", Pin = 2222, Balance = 500, IsValid = false },
                 new CreditCard { Number = "1234-1234-1234-1234", Pin = 1234, Balance = 2000, IsValid = true }
             };
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<CreditCard>()
+                .HasIndex(cc => cc.Number)
+                .IsUnique(true);
         }
     }
 }
