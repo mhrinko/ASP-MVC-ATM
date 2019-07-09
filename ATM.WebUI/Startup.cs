@@ -1,7 +1,7 @@
 ﻿using ATM.DataAccess;
 using ATM.DataAccess.Data;
 using ATM.DataAccess.Models;
-using ATM.DataAccess.Services;
+using ATM.BusinessLogic.Services;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

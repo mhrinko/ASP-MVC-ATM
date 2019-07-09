@@ -1,5 +1,5 @@
-﻿using ATM.DataAccess.Models;
-using ATM.DataAccess.Services;
+﻿using ATM.BusinessLogic.Services;
+using ATM.DataAccess.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;

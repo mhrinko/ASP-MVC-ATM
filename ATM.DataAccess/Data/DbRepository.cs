@@ -1,9 +1,9 @@
 ﻿using ATM.DataAccess.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using System.Collections.Generic;
 
 namespace ATM.DataAccess.Data
 {
@@ -25,8 +25,22 @@ namespace ATM.DataAccess.Data
 
         public async Task DeleteAsync(CreditCard entity)
         {
-            _context.CreditCards.Remove(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.CreditCards.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!Exists(entity.Id))
+                {
+                    throw new ArgumentException("This card doesn't exist");
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         public async Task EditAsync(CreditCard entity)
@@ -40,7 +54,7 @@ namespace ATM.DataAccess.Data
             {
                 if (!Exists(entity.Id))
                 {
-                    throw new InvalidOperationException("This card doesn't exist");
+                    throw new ArgumentException("This card doesn't exist");
                 }
                 else
                 {
@@ -84,8 +98,22 @@ namespace ATM.DataAccess.Data
 
         public async Task DeleteAsync(UserActionResult entity)
         {
-            _context.ActionResults.Remove(entity);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.ActionResults.Remove(entity);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!Exists(entity.Id))
+                {
+                    throw new ArgumentException("This card doesn't exist");
+                }
+                else
+                {
+                    throw;
+                }
+            }
         }
 
         public async Task EditAsync(UserActionResult entity)
@@ -99,7 +127,7 @@ namespace ATM.DataAccess.Data
             {
                 if (!Exists(entity.Id))
                 {
-                    throw new InvalidOperationException("This action result doesn't exist");
+                    throw new ArgumentException("This action result doesn't exist");
                 }
                 else
                 {

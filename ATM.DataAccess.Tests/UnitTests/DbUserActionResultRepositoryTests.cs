@@ -1,11 +1,9 @@
 ﻿using ATM.DataAccess.Data;
 using ATM.DataAccess.Models;
 using ATM.DataAccess.Tests.Utilities;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -220,7 +218,7 @@ namespace ATM.DataAccess.Tests.UnitTests
                 Func<Task> action = async () => await repository.DeleteAsync(actionToDelete);
 
                 // Assert
-                await Assert.ThrowsAsync<DbUpdateConcurrencyException>(action);
+                await Assert.ThrowsAsync<ArgumentException>(action);
             }
         }
         #endregion
@@ -277,8 +275,7 @@ namespace ATM.DataAccess.Tests.UnitTests
                 Func<Task> action = async () => await repository.EditAsync(cardToEdit);
 
                 // Assert
-                // TODO : move this exception to business layer, replace by DbUpdateConcurrencyException here
-                await Assert.ThrowsAsync<InvalidOperationException>(action);
+                await Assert.ThrowsAsync<ArgumentException>(action);
             }
         }
         #endregion

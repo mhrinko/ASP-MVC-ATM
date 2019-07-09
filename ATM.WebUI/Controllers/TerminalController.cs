@@ -1,7 +1,7 @@
-﻿using ATM.WebUI.Models;
-using ATM.WebUI.Filters;
+﻿using ATM.BusinessLogic.Services;
 using ATM.DataAccess.Models;
-using ATM.DataAccess.Services;
+using ATM.WebUI.Filters;
+using ATM.WebUI.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;

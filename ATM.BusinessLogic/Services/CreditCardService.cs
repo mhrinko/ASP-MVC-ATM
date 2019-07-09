@@ -3,7 +3,7 @@ using ATM.DataAccess.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace ATM.DataAccess.Services
+namespace ATM.BusinessLogic.Services
 {
     public class CreditCardService
     {

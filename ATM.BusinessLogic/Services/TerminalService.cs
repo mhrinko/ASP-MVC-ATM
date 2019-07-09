@@ -1,11 +1,10 @@
-﻿using ATM.DataAccess.Models;
-using ATM.DataAccess;
+﻿using ATM.DataAccess;
 using ATM.DataAccess.Models;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Threading.Tasks;
 
-namespace ATM.DataAccess.Services
+namespace ATM.BusinessLogic.Services
 {
     public class TerminalService
     {
