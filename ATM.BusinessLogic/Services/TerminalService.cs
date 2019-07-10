@@ -19,7 +19,7 @@ namespace ATM.BusinessLogic.Services
             _logger = logger;
         }
 
-        public async Task<int> GetCardIdByNumberAsync(string number)
+        public virtual async Task<int> GetCardIdByNumberAsync(string number)
         {
             var creditCards = await _creditCardRepository.GetAllAsync();
             CreditCard card;
@@ -42,7 +42,7 @@ namespace ATM.BusinessLogic.Services
             return card.Id;
         }
 
-        public async Task<bool> IsValidCardCombinationAsync(int? id, int pin)
+        public virtual async Task<bool> IsValidCardCombinationAsync(int? id, int pin)
         {
             if (!id.HasValue)
             {
@@ -61,7 +61,7 @@ namespace ATM.BusinessLogic.Services
             return cc != null;
         }
 
-        public async Task<CreditCardBalanceViewModel> GetCreditCardDetailsByIdAsync(int? id)
+        public virtual async Task<CreditCardBalanceViewModel> GetCreditCardDetailsByIdAsync(int? id)
         {
             if (!id.HasValue)
             {
@@ -89,7 +89,7 @@ namespace ATM.BusinessLogic.Services
             return new CreditCardBalanceViewModel { Number = card.Number, Balance = card.Balance };
         }
 
-        public async Task<WithdrawalResultViewModel> WithdrawByIdAsync(int? id, decimal amount)
+        public virtual async Task<WithdrawalResultViewModel> WithdrawByIdAsync(int? id, decimal amount)
         {
             if (!id.HasValue)
             {

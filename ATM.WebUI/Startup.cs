@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
+using ATM.WebUI.Utilities;
 
 namespace ATM.WebUI
 {
@@ -51,6 +52,7 @@ namespace ATM.WebUI
             services.AddScoped<TerminalService>();
             services.AddScoped<CreditCardService>();
             services.AddScoped<ActionResultService>();
+            services.AddSingleton<ITerminalSessionManager, BasicTerminalSessionManager>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

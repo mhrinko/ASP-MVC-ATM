@@ -2,6 +2,7 @@
 using ATM.DataAccess.Models;
 using ATM.WebUI.Filters;
 using ATM.WebUI.Models;
+using ATM.WebUI.Utilities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -17,13 +18,13 @@ namespace ATM.WebUI.Controllers
     {
         private TerminalService _terminalService;
         private ILogger _logger;
+        private ITerminalSessionManager _sessionManager;
 
-        public static readonly string SESSSION_KEY_CARD_ID = "cardId";
-
-        public TerminalController(TerminalService terminalService, ILogger<TerminalController> logger)
+        public TerminalController(TerminalService terminalService, ILogger<TerminalController> logger, ITerminalSessionManager sessionManager)
         {
             _terminalService = terminalService;
             _logger = logger;
+            _sessionManager = sessionManager;
         }
 
         public IActionResult Index()
@@ -33,7 +34,7 @@ namespace ATM.WebUI.Controllers
 
         public IActionResult Card()
         {
-            HttpContext.Session.Clear();
+            _sessionManager.ClearSession(HttpContext);
             return View();
         }
 
@@ -42,25 +43,27 @@ namespace ATM.WebUI.Controllers
         public async Task<IActionResult> Card(string number)
         {
             int id = await _terminalService.GetCardIdByNumberAsync(number);
-            HttpContext.Session.SetInt32(SESSSION_KEY_CARD_ID, id);
+            _sessionManager.SetSessionCardId(HttpContext, id);
             return RedirectToAction(nameof(Pin));
         }
 
-        [TerminalAuthorizationFilter]
+        [TerminalIdFilter]
         public IActionResult Pin()
         {
+            _sessionManager.Unauthorize(HttpContext);
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [TerminalAuthorizationFilter]
+        [TerminalIdFilter]
         public async Task<IActionResult> Pin(int pin)
         {
-            int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
+            int cardId = _sessionManager.GetSessionCardId(HttpContext).Value;
             bool isValid = await _terminalService.IsValidCardCombinationAsync(cardId, pin);
             if (isValid)
             {
+                _sessionManager.Authorize(HttpContext);
                 return RedirectToAction(nameof(Menu));
             }
             else
@@ -70,20 +73,23 @@ namespace ATM.WebUI.Controllers
         }
 
         [TerminalAuthorizationFilter]
+        [TerminalIdFilter]
         public IActionResult Menu()
         {
             return View();
         }
 
         [TerminalAuthorizationFilter]
+        [TerminalIdFilter]
         public async Task<IActionResult> Balance()
         {
-            int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
+            int cardId = _sessionManager.GetSessionCardId(HttpContext).Value;
             var result = await _terminalService.GetCreditCardDetailsByIdAsync(cardId);
             return View(result);
         }
 
         [TerminalAuthorizationFilter]
+        [TerminalIdFilter]
         public IActionResult Withdraw()
         {
             return View();
@@ -92,14 +98,16 @@ namespace ATM.WebUI.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [TerminalAuthorizationFilter]
+        [TerminalIdFilter]
         public async Task<IActionResult> Withdraw(decimal withdrawalAmount)
         {
-            int cardId = HttpContext.Session.GetInt32(SESSSION_KEY_CARD_ID).Value;
+            int cardId = _sessionManager.GetSessionCardId(HttpContext).Value;
             var result = await _terminalService.WithdrawByIdAsync(cardId, withdrawalAmount);
             return RedirectToAction(nameof(WithdrawalResult), result);
         }
 
         [TerminalAuthorizationFilter]
+        [TerminalIdFilter]
         public IActionResult WithdrawalResult(WithdrawalResultViewModel viewModel)
         {
             return View(viewModel);
