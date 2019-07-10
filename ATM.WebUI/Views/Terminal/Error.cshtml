@@ -6,16 +6,17 @@
 
 <div>
     <div class="row">
-        <div class="col-md-4 margin-top-20"></div>
-        <div class="col-md-4 margin-top-20">
+        <div class="col-md-3 margin-top-20"></div>
+        <div class="col-md-6 margin-top-20">
             @if (Model.ShowErrorMessage)
             {
-                <h4>
+                <h4 class="margin-top-20">
                     <strong>@Model.ErrorMessage</strong>
                 </h4>
             }
-            <button class="btn btn-primary btn-block margin-top-20" onclick="goBack()">Back</button>
-            <a href="Index"><div class="btn btn-primary btn-block margin-top-20">Exit</div></a>
+            <button class="col-9 btn btn-primary margin-top-20" onclick="goBack()">Back</button>
+            <a href="Index"><div class="col-9 btn btn-primary margin-top-20">Exit</div></a>
+            <p class="margin-top-20"/>
         </div>
     </div>
 </div>

@@ -12,7 +12,7 @@ namespace ATM.WebUI.Filters
         {
             if (!_sessionManager.IsAuthorized(context.HttpContext))
             {
-                throw new InvalidOperationException("Can't access this area without providing valid number-pin combination");
+                throw new InvalidOperationException("Can't access this area without providing a valid number-pin combination");
             }
             base.OnActionExecuting(context);
         }

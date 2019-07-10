@@ -6,7 +6,7 @@ namespace ATM.DataAccess.Models
     public class CreditCardBalanceViewModel
     {
         [Required]
-        [RegularExpression(@"^\d{4}(-\d{4}){3}$")]
+        [RegularExpression(@"^\d{4}(-\d{4}){3}$", ErrorMessage = "The card number must have the following format: 1111-1111-1111-1111")]
         public string Number { get; set; }
 
         [Required]
@@ -35,7 +35,7 @@ namespace ATM.DataAccess.Models
     public class WithdrawalResultViewModel
     {
         [Required]
-        [RegularExpression(@"^\d{4}(-\d{4}){3}$")]
+        [RegularExpression(@"^\d{4}(-\d{4}){3}$", ErrorMessage = "The card number must have the following format: 1111-1111-1111-1111")]
         public string Number { get; set; }
 
         [Required]

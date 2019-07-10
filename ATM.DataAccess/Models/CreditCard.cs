@@ -7,7 +7,7 @@ namespace ATM.DataAccess.Models
         public int Id { get; set; }
 
         [Required]
-        [RegularExpression(@"^\d{4}(-\d{4}){3}$")]
+        [RegularExpression(@"^\d{4}(-\d{4}){3}$", ErrorMessage = "The card number must have the following format: 1111-1111-1111-1111")]
         [StringLength(19, MinimumLength = 19)]
         public string Number { get; set; }
 
