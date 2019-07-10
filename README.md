@@ -38,4 +38,4 @@ Other ways to launch the app may require additional environment setup for all fu
 * ~~Data input using on-screen numpad only~~
 * ~~3 layer architecture~~
 * ~~Repository pattern in data access layer~~
-* Unit-tests
+* ~~Unit-tests~~
